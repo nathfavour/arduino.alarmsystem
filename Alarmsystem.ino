@@ -41,6 +41,9 @@ void loop() {
   } else {
     deactivateAlarm();
   }
+
+  // Add a status message to indicate the sensor is working
+  Serial.println("Sensor active and reading values.");
 }
 
 void triggerSensor() {
@@ -53,6 +56,13 @@ void triggerSensor() {
 
   // Measure the duration of the echo pulse
   unsigned long duration = pulseIn(ECHO_PIN, HIGH);
+
+  // Check for invalid duration (potential wiring or sensor issue)
+  if (duration == 0) {
+    Serial.println("Error: No echo pulse received. Check wiring and sensor.");
+    distanceCm = 0; // Set distance to 0 to avoid false alarms
+    return; // Exit the function
+  }
 
   // Calculate the distance in centimeters
   distanceCm = (duration * SOUND_SPEED) / 2;
